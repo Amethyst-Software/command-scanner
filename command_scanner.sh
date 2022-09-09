@@ -40,6 +40,10 @@ fi
 NUM_LINES=$(wc -l "$1")
 NUM_LINES=$(echo $NUM_LINES | egrep -o "[[:digit:]]* ")
 NUM_LINES=$(echo $NUM_LINES | tr -d '[:space:]')
+LAST_CHAR=$(tail -c -1 "$1")
+if [ "$LAST_CHAR" != "\n" ]; then
+   let NUM_LINES+=1
+fi
 
 # Load file into memory and prepare some variables
 IFS="
@@ -159,7 +163,7 @@ for ((i = 0; i < $NUM_CHARS; ++i)); do
       let CUR_LINE+=1
       if [ $DEBUG_START -eq 0 ] && [ $DEBUG_END -eq 0 ]; then
          printf "\e[1A\n"
-         echo -n "$(($CUR_LINE-1))/$NUM_LINES lines processed..."
+         echo -n "$CUR_LINE/$NUM_LINES lines processed..."
       fi
       dbg "Now on line $CUR_LINE"
       PREV_CHAR=""
